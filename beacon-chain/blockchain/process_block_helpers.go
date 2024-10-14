@@ -114,6 +114,19 @@ func (s *Service) sendStateFeedOnBlock(cfg *postBlockProcessConfig) {
 	})
 }
 
+func (s *Service) handleLightClientUpdates(cfg *postBlockProcessConfig) {
+	if features.Get().EnableLightClient {
+		s.saveLightClientUpdates(cfg)
+		s.sendLightClientFeeds(cfg)
+	}
+}
+
+func (s *Service) saveLightClientUpdates(cfg *postBlockProcessConfig) {
+	block := cfg.signed.Block()
+	updatePeriod := uint64(block.Slot()) / (uint64(params.BeaconConfig().SlotsPerEpoch) * uint64(params.BeaconConfig().EpochsPerSyncCommitteePeriod))
+
+}
+
 // sendLightClientFeeds sends the light client feeds when feature flag is enabled.
 func (s *Service) sendLightClientFeeds(cfg *postBlockProcessConfig) {
 	if features.Get().EnableLightClient {
